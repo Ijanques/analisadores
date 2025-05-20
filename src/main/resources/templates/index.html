@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisador de Compiladores</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Analisador de Compiladores</h1>
+            <p class="subtitle">
+                Analise expressões conforme a gramática:<br>
+                <code class="gramatica">
+                    E → E == T | E != T | T<br>
+                    T → T + F | T - F | F<br>
+                    F → ( E ) | id
+                </code>
+            </p>
+        </header>
+
+        <form th:action="@{/analisar}" method="post" class="editor-container">
+            <textarea name="codigo" placeholder="Digite sua expressão (ex: x + y == 10)" th:text="${codigo}"></textarea>
+            <div class="botoes">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-play"></i> Analisar
+                </button>
+                <button type="reset" class="btn-danger">
+                    <i class="fas fa-trash"></i> Limpar
+                </button>
+            </div>
+        </form>
+
+        <div class="resultados">
+            <div class="painel">
+                <div class="painel-header">
+                    <i class="fas fa-code"></i>
+                    <span>Tokens</span>
+                </div>
+                <div class="painel-content" th:if="${tokens != null}">
+                    <div class="token-line" th:each="token : ${tokens}">
+                        <span class="token-position">[[${token.linha}]]:[[${token.coluna}]]</span>
+                        <span class="token-type badge">[[${token.tipo}]]</span>
+                        <span class="token-lexema">[[${token.lexema}]]</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="painel">
+                <div class="painel-header">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Árvore Sintática</span>
+                </div>
+                <div class="painel-content arvore" th:if="${arvore != null}" th:text="${arvore}"></div>
+            </div>
+
+            <div class="painel">
+                <div class="painel-header">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Análise Semântica</span>
+                </div>
+                <div class="painel-content">
+                    <div th:if="${semantica != null}" th:text="${semantica}" class="semantica"></div>
+                    <div class="erro" th:if="${erro != null}">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span th:text="${erro}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
